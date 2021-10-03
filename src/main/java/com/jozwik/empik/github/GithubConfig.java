@@ -19,16 +19,16 @@ public class GithubConfig {
     WebClient githubWebClient(GithubProperties properties) {
         return WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .clientConnector(new ReactorClientHttpConnector(githubHttpClient()))
+                .clientConnector(new ReactorClientHttpConnector(githubHttpClient(properties)))
                 .build();
     }
 
-    private HttpClient githubHttpClient() {
+    private HttpClient githubHttpClient(GithubProperties properties) {
         return HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .responseTimeout(Duration.ofMillis(5000))
-                .doOnConnected(connection -> connection.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
-                        .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectionTimeout())
+                .responseTimeout(Duration.ofMillis(properties.getResponseTimeout()))
+                .doOnConnected(connection -> connection.addHandlerLast(new ReadTimeoutHandler(properties.getReadTimeout(), TimeUnit.MILLISECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(properties.getWriteTimeout(), TimeUnit.MILLISECONDS))
                 );
     }
 }

@@ -17,3 +17,7 @@ spring:
       path: /h2-console
 github:
   url: "https://api.github.com"
+  connectionTimeout: 5000
+  responseTimeout: 5000
+  readTimeout: 5000
+  writeTimeout: 5000
